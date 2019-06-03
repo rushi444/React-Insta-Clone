@@ -5,23 +5,26 @@ import { FiCompass, FiUser } from 'react-icons/fi';
 
 const SearchBar = (props) => {
     return (
-        <header classname='header'>
-            <nav>
-                <div classname='logoContainer'>
-                    <div className='logo'>
-                        <IoLogoInstagram />
-                    </div>
-                    <h3 className='logotext'>instagram</h3>
+        <header className="header">
+        <nav>
+        <div className="logoContainer">
+                <div className="logoIcon">
+                <IoLogoInstagram />
                 </div>
-                <input className='search' placeholder='search' />
-                <div className='iconContainer'>
-                    <div><FiCompass /></div>
-                    <div><IoIosHeartEmpty /></div>
-                    <div><FiUser /></div>
-                </div>
-            </nav>
-        </header>
+                <h3 className="logoText">
+                    instagram
+                </h3>
+            </div>
+            <input className="search" placeholder= "Search"/>
+            <div className="iconContainer">
+            <div><FiCompass /></div>
+            <div><IoIosHeartEmpty /></div>
+            <div><FiUser /></div>
+            </div>
+        </nav>
+
+         </header>
     )
 }
 
-export default SearchBar; 
+ export default SearchBar;
