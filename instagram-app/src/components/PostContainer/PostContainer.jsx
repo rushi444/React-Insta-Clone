@@ -1,33 +1,89 @@
-import React from 'react';
+import React, { useState } from 'react';
+import pt from 'prop-types';
+import uuidv4 from 'uuid/v4';
+import moment from 'moment';
+import faker from 'faker';
 import { IoIosHeartEmpty} from "react-icons/io";
 import { FaRegComment } from "react-icons/fa";
 import CommentSection from '../CommentSection/CommentSection';
+import Form from '../Form/form';
 import './PostContainer.css';
 
- const PostContainer = (props) => {
+const PostContainer = ({ props }) => {
+    const { comments, thumbnailUrl, imageUrl, timestamp, likes, username } = props;
+    const  commentDate = timestamp.replace(/th/, "");
+    const [inputValue, setChange] = useState('');
+    const [inputComment, setComment] = useState(comments);
+    const [createdAt, settimestamp] = useState(moment(new Date(commentDate)).format("MMM D LTS"));
+    
+    const[addLikes, updateLikes] = useState(likes); 
+    
+    const handleChange = (e) =>{
+        setChange(e.target.value);
+      }
+    const postComment = (e) => {
+        e.preventDefault();
+        const newComment = {
+            id: uuidv4(),
+          username: faker.name.findName(),
+          text: inputValue
+        };
+        setComment(comments.concat(newComment));
+        setChange('');
+        settimestamp(moment(new Date()).format("MMM D LTS"))
+      }
+
+      const handleLikes = () => {
+          let newLike = likes; 
+          updateLikes(newLike + 1)
+      }
+    
     return (
         <div className="postContainer">
             <div className="userDetails">
-                <img className="profilePicture" src={props.post.thumbnailUrl} alt="user-profile" />
-                <p>{props.post.username}</p>
+                <img className="profilePicture" src={thumbnailUrl} alt="user-profile" />
+                <p>{username}</p>
             </div>
             <div className="userPost">
-                <img className="postImage" src={props.post.imageUrl} alt="user-post"/>
+                <img className="postImage" src={imageUrl} alt="user-post"/>
             </div>
             <div className="reaction">
             <div className="postIcons">
-            <IoIosHeartEmpty /> <FaRegComment/>
+            
+            <span onClick={handleLikes}><IoIosHeartEmpty /> </span>
+            
+            <FaRegComment/>
             </div>
-            {props.post.likes} likes</div>
-            {props.post.comments.map((comment, index) =>{
-                console.log("===",comment);
-                return <CommentSection key={index} props={comment}/>
+            {addLikes} likes</div>
+            {
+                inputComment.map((comment) =>{
+                return <CommentSection key={comment.id} props={comment}/>
             })
             }
             <div className="timestamp">
-            {props.post.timestamp}</div>
+            {createdAt}</div>
+            <Form 
+                inputValue={inputValue}
+                changeHandler={handleChange}
+                addComment={postComment}
+            />
         </div>
     )
 }
 
- export default PostContainer;
+export default PostContainer;
+
+PostContainer.propTypes = {
+    props: pt.shape({
+        comments: pt.arrayOf(pt.shape({
+            id: pt.string.isRequired,
+            username: pt.string.isRequired,
+            text: pt.string.isRequired
+        })),
+        thumbnailUrl: pt.string.isRequired,
+        imageUrl: pt.string.isRequired, 
+        timestamp: pt.string.isRequired, 
+        likes: pt.number.isRequired, 
+        username: pt.string.isRequired
+    }).isRequired
+}
