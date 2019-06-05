@@ -10,80 +10,91 @@ import Form from '../Form/form';
 import './PostContainer.css';
 
 const PostContainer = ({ props }) => {
-    const { comments, thumbnailUrl, imageUrl, timestamp, likes, username } = props;
-    const  commentDate = timestamp.replace(/th/, "");
-    const [inputValue, setChange] = useState('');
+    const {
+      comments,
+      thumbnailUrl,
+      imageUrl,
+      timestamp,
+      likes,
+      username
+    } = props;
+    const commentDate = timestamp.replace(/th/, "");
+    const [inputValue, setChange] = useState("");
     const [inputComment, setComment] = useState(comments);
-    const [createdAt, settimestamp] = useState(moment(new Date(commentDate)).format("MMM D LTS"));
-    
-    const[addLikes, updateLikes] = useState(likes); 
-    
-    const handleChange = (e) =>{
-        setChange(e.target.value);
-      }
-    const postComment = (e) => {
-        e.preventDefault();
-        const newComment = {
-            id: uuidv4(),
-          username: faker.name.findName(),
-          text: inputValue
-        };
-        setComment(comments.concat(newComment));
-        setChange('');
-        settimestamp(moment(new Date()).format("MMM D LTS"))
-      }
-
-      const handleLikes = () => {
-          let newLike = likes; 
-          updateLikes(newLike + 1)
-      }
-    
+    const [createdAt, settimestamp] = useState(
+      moment(new Date(commentDate), "MMM D LTS").fromNow()
+    );
+  
+    const [addLikes, updateLikes] = useState(likes);
+  
+    const handleChange = e => {
+      setChange(e.target.value);
+    };
+    const postComment = e => {
+      e.preventDefault();
+      const newComment = {
+        id: uuidv4(),
+        username: faker.name.findName(),
+        text: inputValue
+      };
+      setComment([...inputComment, newComment]);
+      setChange("");
+      settimestamp(moment(new Date(), "MMM D LTS").fromNow());
+    };
+    const handleLikes = () => {
+      let newLike = likes;
+      updateLikes(newLike + 1);
+    };
+  
     return (
-        <div className="postContainer">
-            <div className="userDetails">
-                <img className="profilePicture" src={thumbnailUrl} alt="user-profile" />
-                <p>{username}</p>
-            </div>
-            <div className="userPost">
-                <img className="postImage" src={imageUrl} alt="user-post"/>
-            </div>
-            <div className="reaction">
-            <div className="postIcons">
-            
-            <span onClick={handleLikes}><IoIosHeartEmpty /> </span>
-            
-            <FaRegComment/>
-            </div>
-            {addLikes} likes</div>
-            {
-                inputComment.map((comment) =>{
-                return <CommentSection key={comment.id} props={comment}/>
-            })
-            }
-            <div className="timestamp">
-            {createdAt}</div>
-            <Form 
-                inputValue={inputValue}
-                changeHandler={handleChange}
-                addComment={postComment}
-            />
+      <div className="postContainer">
+        <div className="userDetails">
+          <img className="profilePicture" src={thumbnailUrl} alt="user-profile" />
+          <p>{username}</p>
         </div>
-    )
-}
-
-export default PostContainer;
-
-PostContainer.propTypes = {
+        <div className="userPost">
+          <img className="postImage" src={imageUrl} alt="user-post" />
+        </div>
+        <div className="reaction">
+          <div className="postIcons">
+            <span onClick={handleLikes}>
+              <IoIosHeartEmpty />
+            </span>
+  
+            <span>
+              <FaRegComment />
+            </span>
+          </div>
+          {addLikes} likes
+        </div>
+        {inputComment.map(comment => {
+          return <CommentSection key={comment.id} props={comment} />;
+        })}
+        <div className="timestamp">{createdAt}</div>
+        <Form
+          inputValue={inputValue}
+          changeHandler={handleChange}
+          addComment={postComment}
+        />
+      </div>
+    );
+  };
+  
+  export default PostContainer;
+  
+  PostContainer.propTypes = {
     props: pt.shape({
-        comments: pt.arrayOf(pt.shape({
-            id: pt.string.isRequired,
-            username: pt.string.isRequired,
-            text: pt.string.isRequired
-        })),
-        thumbnailUrl: pt.string.isRequired,
-        imageUrl: pt.string.isRequired, 
-        timestamp: pt.string.isRequired, 
-        likes: pt.number.isRequired, 
-        username: pt.string.isRequired
+      comments: pt.arrayOf(
+        pt.shape({
+          id: pt.string.isRequired,
+          username: pt.string.isRequired,
+          text: pt.string.isRequired
+        })
+      ),
+      thumbnailUrl: pt.string.isRequired,
+      imageUrl: pt.string.isRequired,
+      timestamp: pt.string.isRequired,
+      likes: pt.number.isRequired,
+      username: pt.string.isRequired
     }).isRequired
-}
+  };

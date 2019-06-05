@@ -1,40 +1,63 @@
-import React, { useState } from 'react';
-import data from './dummy-data';
-import SearchBar from './components/SearchBar/SearchBar';
-import PostContainer from './components/PostContainer/PostContainer';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import data from "./dummy-data";
+import SearchBar from "./components/SearchBar/SearchBar";
+import PostContainer from "./components/PostContainer/PostContainer";
+import "./App.css";
 
 function App() {
-  const [post, setData] = useState(data);
-  const [search, setSearch] = useState('');
+  const [posts, setData] = useState([]);
+  const [search, setSearch] = useState("");
 
-   const handleSearch = (e) => {
+  useEffect(() => {
+    const allData = localStorage.getItem("posts");
+    console.log('---------',JSON.parse(allData));
+    let postData
+    if(allData) {
+      postData = JSON.parse(allData);
+    }else {
+      localStorage.setItem("posts", JSON.stringify(data));
+      postData = JSON.parse(localStorage.getItem("posts"));
+    }
+    setData(postData);
+  }, []);
+
+  const handleSearch = e => {
     e.preventDefault();
-    console.log('searching');
-    const data = post;
+    console.log("searching");
+    const data = posts;
     const query = [];
-    setSearch(e.target.value.toLowerCase())
+    setSearch(e.target.value.toLowerCase());
     data.map(user => {
       if (user.username.toLowerCase().includes(search)) {
         query.push(user);
       }
-      return setData(query)
+      return query;
     });
+    setData(query);
+  };
 
-   }
+  // const addComment = (postId, commentUpdate) => {
+  //   const postUpdate = posts.map((userPost) => {
+  //     if (postId === userPost.id) {
+  //       return {
+  //         ...userPost, comments: commentUpdate
+  //       }
+  //     }
+  //     return userPost;
+  //   })
+  //   localStorage.setItem("posts", JSON.stringify(postUpdate));
+  // }
 
   return (
     <div className="App">
-      <SearchBar search={search} handleSearch={handleSearch}/>
-      {post.map((userPost, index)=>{
-        return (
-        <PostContainer
-        key={index}
-        props={userPost}
-        />)
-      })
-      }
-      
+      <SearchBar search={search} handleSearch={handleSearch} />
+      {posts.map((userPost, index) => {
+        return <PostContainer 
+        key={index} 
+        props={userPost} 
+
+        />;
+      })}
     </div>
   );
 }
