@@ -7,7 +7,9 @@ import { IoIosHeartEmpty } from "react-icons/io";
 import { FaRegComment } from "react-icons/fa";
 import CommentSection from "../CommentSection/CommentSection";
 import Form from "../Form/form";
+import styled from 'styled-components';
 import "./PostContainer.css";
+
 
 const PostContainer = ({ props }) => {
   const {
@@ -27,11 +29,11 @@ const PostContainer = ({ props }) => {
   );
 
   const [addLikes, updateLikes] = useState(likes);
-console.log(createdAt);
-  useEffect(()=>{
+  console.log(createdAt);
+  useEffect(() => {
     const post = JSON.parse(localStorage.getItem("posts"));
     const postUpdate = post.map((userPost) => {
-      if(postId === userPost.postId) {
+      if (postId === userPost.postId) {
         return {
           ...userPost, comments: inputComment, timestamp: `${moment(new Date(), "MMM D LTS")}`, likes: addLikes
         }
@@ -39,7 +41,7 @@ console.log(createdAt);
       return userPost;
     });
     localStorage.setItem("posts", JSON.stringify(postUpdate));
-  },[inputComment, postId, createdAt, addLikes])
+  }, [inputComment, postId, createdAt, addLikes])
 
   const handleChange = e => {
     setInputValue(e.target.value);
@@ -61,8 +63,17 @@ console.log(createdAt);
     updateLikes(newLike + 1);
   };
 
+  const Postcontainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: 5rem auto;
+  border: 1px solid lightgray;
+
+  `
+
   return (
-    <div className="postContainer">
+    <Postcontainer>
       <div className="userDetails">
         <img className="profilePicture" src={thumbnailUrl} alt="user-profile" />
         <p>{username}</p>
@@ -91,7 +102,7 @@ console.log(createdAt);
         changeHandler={handleChange}
         addComment={postComment}
       />
-    </div>
+    </ Postcontainer>
   );
 };
 
